@@ -1,90 +1,47 @@
+import React, { useState } from 'react';
 import '../styles/SignUpScreen.css';
-import { useRef, useState } from 'react';
-import { auth } from '../../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
-const SignUpScreen = () => {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const [loading, setLoading] = useState(false);
+function SignUpScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-
-  const register = async (e) => {
+  const register = (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      const authUser = await createUserWithEmailAndPassword(
-        auth,
-        emailRef.current.value,
-        passwordRef.current.value
-      );
-      console.log('User registered:', authUser);
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setLoading(false);
-    }
+    // Add your registration logic here
+    console.log('Register:', email, password);
   };
 
-  const signIn = async (e) => {
+  const signIn = (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      const authUser = await signInWithEmailAndPassword(
-        auth,
-        emailRef.current.value,
-        passwordRef.current.value
-      );
-      console.log('User signed in:', authUser);
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setLoading(false);
-    }
+    // Add your sign-in logic here
+    console.log('Sign In:', email, password);
   };
-
 
   return (
-    <div className="signUpScreen">
+    <div className='signupScreen'>
       <form>
         <h1>Sign In</h1>
-        <input
-          ref={emailRef}
-          type="email"
-          placeholder="Email"
-          required
-          disabled={loading}
+        <input 
+          placeholder='Email'
+          type='email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          ref={passwordRef}
-          type="password"
-          placeholder="Password"
-          required
-          disabled={loading}
+        <input 
+          placeholder='Password'
+          type='password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <button
-          type="submit"
-          onClick={signIn}
-          disabled={loading}
-        >
-          {loading ? 'Signing In...' : 'Sign In'}
-        </button>
-
+        <button type='submit' onClick={signIn}>Sign In</button>
+        
         <h4>
-          <span className='signUpScreen-gray'>New to Netflix? </span>
-          <span
-            className='signUpScreen-link'
-            onClick={register}
-            style={{ cursor: loading ? 'not-allowed' : 'pointer' }}
-          >
-            {loading ? 'Creating Account...' : 'Sign Up now'}
-          </span>
+          <span className='signupScreen-gray'>New to Netflix? </span>
+          <span className='signupScreen-link' onClick={register}>Sign up now.</span>
         </h4>
       </form>
     </div>
   );
-};
+}
 
 export default SignUpScreen;

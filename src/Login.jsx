@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './styles/Login.css';
 import SignUpScreen from './components/SignUpScreen';
 
-function loginScreen() {
+function LoginScreen() {
   const [signIn, setSignIn] = useState(false);
 
   return (
@@ -32,4 +32,4 @@ function loginScreen() {
   );
 }
 
-export default loginScreen;
+export default LoginScreen;
