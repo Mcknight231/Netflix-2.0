@@ -1,38 +1,34 @@
-import { useState, useEffect } from 'react';
-import HomeScreen from './components/HomeScreen';
-import './styles/App.css';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomeScreen from './components/HomeScreen';
 import LoginScreen from './Login';
-import { auth } from '../firebase.js';
-import { onAuthStateChanged } from 'firebase/auth';
-import { useDispatch } from 'react-redux';
-import { logout } from './features/userSlice';
+import { loginSuccess, logout } from './features/userSlice';
+import './styles/App.css';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (userAuth) => {
-      if (userAuth) {
-        // Logged In
-        console.log('User logged in:', userAuth);
-      } else {
-        // Logged Out
-        dispatch(logout);
+    const unsubscribe = () => {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        try {
+          dispatch(loginSuccess(JSON.parse(savedUser)));
+        } catch (error) {
+          console.error('Error parsing saved user:', error);
+          localStorage.removeItem('user');
+        }
       }
-      setLoading(false);
-    });
+    };
 
+    unsubscribe();
+    
     return () => {
-      unsubscribe();
+      // idk
     };
   }, [dispatch]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className='App'>

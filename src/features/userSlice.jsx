@@ -1,20 +1,40 @@
-import React from 'react';
+// src/store/userSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
-export const userSlice = createSlice({
+const initialState = {
+    user: null,
+    loading: false,
+    error: null,
+};
+
+const userSlice = createSlice({
     name: 'user',
-    initialState: {
-        user: null,
-    },
+    initialState,
     reducers: {
-        setUser: (state, action) => {
+        loginStart: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        loginSuccess: (state, action) => {
             state.user = action.payload;
+            state.loading = false;
+            state.error = null;
+        },
+        loginFailure: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        },
+        logout: (state) => {
+            state.user = null;
+            state.loading = false;
+            state.error = null;
+        },
+        clearError: (state) => {
+            state.error = null;
         },
     },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, clearError } = userSlice.actions;
 
-export const selectUser = (state) => state.user.user;
-
-export default userSlice
+export default userSlice.reducer;
