@@ -5,6 +5,8 @@ import HomeScreen from './components/HomeScreen';
 import LoginScreen from './Login';
 import { loginSuccess, logout } from './features/userSlice';
 import './styles/App.css';
+import { auth } from '../firebase.js';
+import ProfileScreen from './ProfileScreen.jsx';
 
 function App() {
   const user = useSelector((state) => state.user.user);
@@ -12,23 +14,24 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = () => {
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        try {
-          dispatch(loginSuccess(JSON.parse(savedUser)));
-        } catch (error) {
-          console.error('Error parsing saved user:', error);
-          localStorage.removeItem('user');
-        }
-      }
+      const savedUser = auth.onAuthStateChanged((userAuth) => {
+          if (userAuth) {
+            dispatch(
+              login({
+                uid: userAuth.uid,
+                email: userAuth.email,
+              })
+            );
+          } else {
+            dispatch(logout());
+          }
+      })
     };
-
-    unsubscribe();
     
     return () => {
-      // idk
+      unsubscribe();
     };
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className='App'>
@@ -37,6 +40,7 @@ function App() {
           <LoginScreen />
         ) : (
           <Routes>
+            <Route path='/profile' element={<ProfileScreen />} />
             <Route path='/' element={<HomeScreen />} />
           </Routes>
         )}
