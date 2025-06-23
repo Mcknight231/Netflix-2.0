@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { logout } from '../features/userSlice.jsx';
+import { auth } from '../../firebase.js';
 import '../styles/Nav.css';
 
 const Nav = () => {
   const [show, handleShow] = useState(false);
-  const dispatch = useDispatch();
 
   const transitionNavBar = () => {
     window.scrollY > 100 ? handleShow(true) : handleShow(false);
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    dispatch(logout());
+    auth.signOut();
   };
 
   useEffect (() => {

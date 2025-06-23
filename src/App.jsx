@@ -13,25 +13,22 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = () => {
-      const savedUser = auth.onAuthStateChanged((userAuth) => {
-          if (userAuth) {
-            dispatch(
-              login({
-                uid: userAuth.uid,
-                email: userAuth.email,
-              })
-            );
-          } else {
-            dispatch(logout());
-          }
-      })
-    };
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        dispatch(loginSuccess({
+          uid: userAuth.uid,
+          email: userAuth.email,
+          displayName: userAuth.displayName || userAuth.email.split('@')[0],
+        }));
+      } else {
+        dispatch(logout());
+      }
+    });
     
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className='App'>
